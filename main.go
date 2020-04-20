@@ -6,6 +6,7 @@ import (
 	"github.com/robfig/cron/v3"
 	"log"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -14,6 +15,9 @@ const TIME_LAYIN  = "2006-01-02"
 const TIME_LAYOUT = "2006-01-02 15:04:05"
 
 func main() {
+	status,_ := strconv.Atoi("0")
+	fmt.Println(status)
+	return
 
 	time.FixedZone("CST", 8*3600)
 	l,_ := time.LoadLocation("America/New_York")
