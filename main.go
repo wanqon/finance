@@ -9,21 +9,9 @@ import (
 	"time"
 )
 
-type aa struct {
-
-}
-
-var p = 0
 
 const TIME_LAYIN  = "2006-01-02"
 const TIME_LAYOUT = "2006-01-02 15:04:05"
-
-func (a *aa) Run() {
-	p++
-	fmt.Printf("5 seconde start:%d\n", p)
-	time.Sleep(7*time.Second)
-	fmt.Printf("5 seconde end:%d\n", p)
-}
 
 func main() {
 
@@ -36,7 +24,7 @@ func main() {
 	lcst := time.FixedZone("CST", 8*3600)
 	t2 := time.Date(t.Year(),t.Month(),t.Day(),23,59,59,0,lcst)
 	fmt.Println(t2.Format(TIME_LAYOUT))
-	return
+	//return
 
 	fmt.Println(time.Now().In(l))
 	fmt.Println(time.Now().In(time.FixedZone("CST", 8*3600)))
