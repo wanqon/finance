@@ -26,7 +26,3 @@ func (bill *Bill) Run()  {
 	//bill.recon()
 	reflect.ValueOf(bill).MethodByName(bill.biz).Call(nil)
 }
-
-func GetZeroTime()  {
-	
-}
