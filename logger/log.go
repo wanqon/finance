@@ -17,10 +17,10 @@ func init()  {
 		MessageKey:     "msg",
 		LevelKey:       "level",
 		TimeKey:        "ts",
-		//NameKey:        "",
-		CallerKey:      "file",
-		//StacktraceKey:  "",
-		//LineEnding:     "",
+		NameKey:        "logger",
+		CallerKey:      "caller",
+		StacktraceKey:  "stacktrace",
+		LineEnding:     zapcore.DefaultLineEnding,
 		EncodeLevel:    zapcore.CapitalLevelEncoder,
 		EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 			enc.AppendString(t.Format("2006-01-02 15:04:05"))
@@ -29,27 +29,48 @@ func init()  {
 			enc.AppendInt64(int64(d) / 1000000)
 		},
 		EncodeCaller:   zapcore.ShortCallerEncoder,
-		//EncodeName:     nil,
+		EncodeName:     nil,
+	})
+
+	encoder2 := zapcore.NewJSONEncoder(zapcore.EncoderConfig{
+		MessageKey:     "msg",
+		LevelKey:       "level",
+		TimeKey:        "ts",
+		NameKey:        "logger",
+		CallerKey:      "caller",
+		StacktraceKey:  "stacktrace",
+		LineEnding:     zapcore.DefaultLineEnding,
+		EncodeLevel:    zapcore.CapitalLevelEncoder,
+		EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+			enc.AppendString(t.Format("2006-01-02 15:04:05"))
+		},
+		EncodeDuration: func(d time.Duration, enc zapcore.PrimitiveArrayEncoder) {
+			enc.AppendInt64(int64(d) / 1000000)
+		},
+		EncodeCaller:   zapcore.ShortCallerEncoder,
+		EncodeName:     nil,
 	})
 
 	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl >= zapcore.InfoLevel
+		return lvl <= zapcore.InfoLevel
 	})
 
 	errorLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl >= zapcore.ErrorLevel
 	})
 
+	//kafkaEncoder := zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
 	infoWriter := getWriter("./logs/demo.log")
 	errorWriter := getWriter("./logs/error.log")
 
 	core := zapcore.NewTee(
-		zapcore.NewCore(encoder, zapcore.AddSync(infoWriter), infoLevel),
+		zapcore.NewCore(encoder2, zapcore.AddSync(infoWriter), infoLevel),
 		zapcore.NewCore(encoder, zapcore.AddSync(errorWriter), errorLevel),
 		)
 
 	// 传入 zap.AddCaller() 才会显示打日志点的文件名和行数,
-	log := zap.New(core, zap.AddCaller())
+	log := zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1))
+	log.Info("init success")
 	errorLogger = log.Sugar()
 }
 
