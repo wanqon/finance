@@ -1,6 +1,7 @@
 package main
 
 import (
+	"finance/logger"
 	"fmt"
 	"github.com/robfig/cron/v3"
 	"log"
@@ -17,6 +18,11 @@ func main() {
 	//a.Run()
 
 	//return
+	logger.Infof("in main args:%v", os.Args)
+	logger.Errorf("error %v", "error")
+	return
+
+
 
 	loger := cron.PrintfLogger(log.New(os.Stdout,"cron: ", log.LstdFlags))
 	c := cron.New(cron.WithSeconds(),cron.WithChain(cron.SkipIfStillRunning(loger)))
@@ -61,11 +67,8 @@ func signalHandle(c *cron.Cron)  {
 			case <-ctx.Done():
 				fmt.Println("context was done too quickly immediately")
 			//case <-time.After(750 * time.Millisecond):
-			//	fmt.Println("what")
-			//	// expected, because the job sleeping for 1 second is still running
+			// expected, because the job sleeping for 1 second is still running
 			}
-			//time.Sleep(10*time.Second)
-
 			log.Printf("graceful reload")
 			return
 		}
