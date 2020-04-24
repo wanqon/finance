@@ -29,8 +29,9 @@ func init()  {
 			enc.AppendInt64(int64(d) / 1000000)
 		},
 		EncodeCaller:   zapcore.ShortCallerEncoder,
-		EncodeName:     nil,
+		EncodeName:     zapcore.FullNameEncoder,
 	})
+
 
 	encoder2 := zapcore.NewJSONEncoder(zapcore.EncoderConfig{
 		MessageKey:     "msg",
@@ -60,7 +61,7 @@ func init()  {
 	})
 
 	//kafkaEncoder := zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
-	infoWriter := getWriter("./logs/demo.log")
+	infoWriter := getWriter("./logs/info.log")
 	errorWriter := getWriter("./logs/error.log")
 
 	core := zapcore.NewTee(
@@ -68,15 +69,15 @@ func init()  {
 		zapcore.NewCore(encoder, zapcore.AddSync(errorWriter), errorLevel),
 		)
 
-	// 传入 zap.AddCaller() 才会显示打日志点的文件名和行数,
+	//log := zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1),zap.AddStacktrace(errorLevel))
 	log := zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1))
-	log.Info("init success")
+
 	errorLogger = log.Sugar()
 }
 
 func getWriter(filename string) io.Writer {
 	hook, err := rotatelogs.New(
-		strings.Replace(filename, ".log", "", -1) + "-%Y%m%d%H.log",
+		strings.Replace(filename, ".log", "", -1) + "-%Y%m%d.log",
 		)
 	if err != nil {
 		panic(err)
