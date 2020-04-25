@@ -75,6 +75,9 @@ func init()  {
 	errorLogger = log.Sugar()
 }
 
+func Name(name string)  {
+	errorLogger.Named(name)
+}
 func getWriter(filename string) io.Writer {
 	hook, err := rotatelogs.New(
 		strings.Replace(filename, ".log", "", -1) + "-%Y%m%d.log",
