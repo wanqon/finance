@@ -4,6 +4,7 @@ import (
 	"finance/logger"
 	"fmt"
 	"github.com/robfig/cron/v3"
+	"go.uber.org/zap"
 	"log"
 	"os"
 	"os/signal"
@@ -17,6 +18,11 @@ func main() {
 	//a := reconciliation.NewCharge("")
 	//a.Run()
 
+	logger.Logger.Named("test")
+	logger.Logger.WithOptions(zap.Fields(zap.Int("foo", 42)))
+
+	logger.Logger.Info("Failed to ferch URL",zap.String("url", "a/b/c"), zap.Int("attempt", 10),zap.Duration("backoff",3))
+	logger.Logger.Error("Failed to ferch URL",zap.String("url", "a/b/c"), zap.Int("attempt", 10),zap.Duration("backoff",3))
 	//return
 	logger.Infof("in main args:%v", os.Args)
 	logger.Errorf("error %v", "error")

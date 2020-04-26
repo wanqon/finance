@@ -11,6 +11,7 @@ import (
 )
 
 var errorLogger *zap.SugaredLogger
+var Logger *zap.Logger
 
 func init()  {
 	encoder := zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
@@ -49,7 +50,7 @@ func init()  {
 			enc.AppendInt64(int64(d) / 1000000)
 		},
 		EncodeCaller:   zapcore.ShortCallerEncoder,
-		EncodeName:     nil,
+		EncodeName:     zapcore.FullNameEncoder,
 	})
 
 	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
@@ -70,9 +71,12 @@ func init()  {
 		)
 
 	//log := zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1),zap.AddStacktrace(errorLevel))
-	log := zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1))
+	//Logger = zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1))
+	Logger = zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1),zap.AddCallerSkip(-1))
 
-	errorLogger = log.Sugar()
+	Logger.WithOptions(zap.Fields(zap.Int("foo", 42)))
+
+	errorLogger = Logger.Sugar()
 }
 
 func getWriter(filename string) io.Writer {
