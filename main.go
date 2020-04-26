@@ -26,6 +26,7 @@ func main() {
 	//return
 	logger.Infof("in main args:%v", os.Args)
 	logger.Errorf("error %v", "error")
+
 	return
 
 
