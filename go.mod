@@ -12,4 +12,5 @@ require (
 	github.com/robfig/cron/v3 v3.0.0
 	github.com/tebeka/strftime v0.1.4 // indirect
 	go.uber.org/zap v1.14.1
+	gopkg.in/ini.v1 v1.55.0 // indirect
 )

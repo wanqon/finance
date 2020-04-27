@@ -2,6 +2,7 @@ package reconciliation
 
 import (
 	"bufio"
+	"finance/utils"
 	"fmt"
 	"io"
 	"os"
@@ -49,9 +50,10 @@ func (bill *ChargeBill) Run() {
 		t, _ = time.Parse(TIME_LAYIN,bill.date)
 	}
 	dbDate := t.Format("20060102")
-	sourceDir := fmt.Sprintf(SourceBase+"charge/%s/",dbDate)
+	basePath := utils.GetString("path", "data")
+	sourceDir := fmt.Sprintf(basePath+"/src_data/db/charge/%s/",dbDate)
 	year,month,day := t.Date()
-	targetDir := fmt.Sprintf(TargetBase+"charge/%d%02d/%02d/", year, int(month), day)
+	targetDir := fmt.Sprintf(basePath+"/finance/charge/%d%02d/%02d/", year, int(month), day)
 	if _, err := os.Stat(targetDir);os.IsNotExist(err) {
 		err := os.MkdirAll(targetDir, os.ModePerm)
 		if err != nil {
