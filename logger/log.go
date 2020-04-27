@@ -33,25 +33,24 @@ func init()  {
 		EncodeName:     zapcore.FullNameEncoder,
 	})
 
-
-	encoder2 := zapcore.NewJSONEncoder(zapcore.EncoderConfig{
-		MessageKey:     "msg",
-		LevelKey:       "level",
-		TimeKey:        "ts",
-		NameKey:        "logger",
-		CallerKey:      "caller",
-		StacktraceKey:  "stacktrace",
-		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    zapcore.CapitalLevelEncoder,
-		EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-			enc.AppendString(t.Format("2006-01-02 15:04:05"))
-		},
-		EncodeDuration: func(d time.Duration, enc zapcore.PrimitiveArrayEncoder) {
-			enc.AppendInt64(int64(d) / 1000000)
-		},
-		EncodeCaller:   zapcore.ShortCallerEncoder,
-		EncodeName:     zapcore.FullNameEncoder,
-	})
+	//encoder2 := zapcore.NewJSONEncoder(zapcore.EncoderConfig{
+	//	MessageKey:     "msg",
+	//	LevelKey:       "level",
+	//	TimeKey:        "ts",
+	//	NameKey:        "logger",
+	//	CallerKey:      "caller",
+	//	StacktraceKey:  "stacktrace",
+	//	LineEnding:     zapcore.DefaultLineEnding,
+	//	EncodeLevel:    zapcore.CapitalLevelEncoder,
+	//	EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+	//		enc.AppendString(t.Format("2006-01-02 15:04:05"))
+	//	},
+	//	EncodeDuration: func(d time.Duration, enc zapcore.PrimitiveArrayEncoder) {
+	//		enc.AppendInt64(int64(d) / 1000000)
+	//	},
+	//	EncodeCaller:   zapcore.ShortCallerEncoder,
+	//	EncodeName:     zapcore.FullNameEncoder,
+	//})
 
 	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl <= zapcore.InfoLevel
@@ -66,7 +65,7 @@ func init()  {
 	errorWriter := getWriter("./logs/error.log")
 
 	core := zapcore.NewTee(
-		zapcore.NewCore(encoder2, zapcore.AddSync(infoWriter), infoLevel),
+		zapcore.NewCore(encoder, zapcore.AddSync(infoWriter), infoLevel),
 		zapcore.NewCore(encoder, zapcore.AddSync(errorWriter), errorLevel),
 		)
 

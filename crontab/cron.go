@@ -1,7 +1,6 @@
-package reconciliation
+package crontab
 
 import (
-	"flag"
 	"reflect"
 	"time"
 )
@@ -18,22 +17,6 @@ const (
 type Bill struct {
 	biz	string
 }
-
-var (
-	Uri		string
-	Date	string
-)
-
-func init()  {
-	flag.StringVar(&Uri, "uri", "", "请求地址")
-	flag.StringVar(&Date, "date", "", "日期")
-}
-
-func TaskInit()  {
-	flag.StringVar(&Uri, "uri", "", "请求地址")
-	flag.StringVar(&Date, "date", "", "日期")
-}
-
 
 func NewCharge(date string) *ChargeBill {
 	return &ChargeBill{

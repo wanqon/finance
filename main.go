@@ -2,6 +2,8 @@ package main
 
 import (
 	"finance/logger"
+	"finance/reconciliation"
+	"flag"
 	"fmt"
 	"github.com/robfig/cron/v3"
 	"go.uber.org/zap"
@@ -12,8 +14,15 @@ import (
 	"time"
 )
 
-func main() {
 
+
+
+func main() {
+	flag.Parse()
+	if reconciliation.Uri == "charge" {
+		reconciliation.WbpayCharge(reconciliation.Date)
+		logger.Logger.Info("charge done",zap.String("uri",reconciliation.Uri),zap.String("date", reconciliation.Date))
+	}
 
 	//a := reconciliation.NewCharge("")
 	//a.Run()
@@ -28,9 +37,6 @@ func main() {
 	logger.Errorf("error %v", "error")
 
 	return
-
-
-
 	loger := cron.PrintfLogger(log.New(os.Stdout,"cron: ", log.LstdFlags))
 	c := cron.New(cron.WithSeconds(),cron.WithChain(cron.SkipIfStillRunning(loger)))
 

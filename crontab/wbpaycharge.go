@@ -1,14 +1,14 @@
-package reconciliation
+package crontab
 
 import (
-	"bufio"
-	"fmt"
-	"io"
-	"os"
-	"strconv"
-	"strings"
-	"sync"
-	"time"
+"bufio"
+"fmt"
+"io"
+"os"
+"strconv"
+"strings"
+"sync"
+"time"
 )
 
 const (
@@ -29,15 +29,16 @@ type ChargeBill struct {
 
 type HandleInfo func([]string)
 
-func WbpayCharge(date string) {
-	chargeBill := &ChargeBill{
+func NewCharge(date string) *ChargeBill {
+	return &ChargeBill{
 		date:      date,
 		StartTime: time.Time{},
 		EndTime:   time.Time{},
 		Fw:        nil,
 	}
-	chargeBill.Run()
 }
+
+
 
 
 func (bill *ChargeBill) Run() {
@@ -48,7 +49,7 @@ func (bill *ChargeBill) Run() {
 	} else {
 		t, _ = time.Parse(TIME_LAYIN,bill.date)
 	}
-	dbDate := t.Format("20060102")
+	dbDate := time.Now().In(l).Format("20060102")
 	sourceDir := fmt.Sprintf(SourceBase+"charge/%s/",dbDate)
 	year,month,day := t.Date()
 	targetDir := fmt.Sprintf(TargetBase+"charge/%d%02d/%02d/", year, int(month), day)
@@ -114,3 +115,4 @@ func ReadFile(swg *sync.WaitGroup, path string, handlefuc HandleInfo)  {
 		handlefuc(chargeInfo)
 	}
 }
+
