@@ -21,10 +21,10 @@ func main() {
 		logger.Info("charge done",zap.String("uri",reconciliation.Uri),zap.String("date", reconciliation.Date))
 	}
 
-	logger.InfoA("test", logger.LogField{"a":6, "b":"c"})
+	logger.Info("test", logger.LogField{"a":6, "b":"c"})
 	return
 
-	
+
 	logger.Info("Failed to ferch URL",zap.String("url", "a/b/c"), zap.Int("attempt", 10),zap.Duration("backoff",3))
 	logger.Error("Failed to ferch URL",zap.String("url", "a/b/c"), zap.Int("attempt", 10),zap.Duration("backoff",3))
 	logger.Info("",zap.String("url", "a/b/c"), zap.Int("attempt", 10),zap.Duration("backoff",3))

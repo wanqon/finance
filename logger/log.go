@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"fmt"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"io"
@@ -87,32 +86,32 @@ func getFields(params LogField) []zap.Field {
 	return fields
 }
 
-func InfoA(msg string,logfields LogField)  {
+func Info(msg string,logfields LogField)  {
 	fields := getFields(logfields)
-	fmt.Println(fields)
 	logger.Info(msg, fields...)
 }
 
-func Info(msg string, fields ...zap.Field)  {
-	logger.Info(msg, fields...)
-}
-
-func Warn(msg string, fields ...zap.Field)  {
+func Warn(msg string, logfields LogField)  {
+	fields := getFields(logfields)
 	logger.Warn(msg, fields...)
 }
 
-func Error(msg string, fields ...zap.Field)  {
+func Error(msg string, logfields LogField)  {
+	fields := getFields(logfields)
 	logger.Error(msg, fields...)
 }
 
-func DPanic(msg string, fields ...zap.Field)  {
+func DPanic(msg string, logfields LogField)  {
+	fields := getFields(logfields)
 	logger.DPanic(msg, fields...)
 }
 
-func Panic(msg string, fields ...zap.Field)  {
+func Panic(msg string, logfields LogField)  {
+	fields := getFields(logfields)
 	logger.Panic(msg, fields...)
 }
 
-func Fatal(msg string, fields ...zap.Field)  {
+func Fatal(msg string, logfields LogField)  {
+	fields := getFields(logfields)
 	logger.Fatal(msg, fields...)
 }
