@@ -10,7 +10,8 @@ require (
 	github.com/lestrrat-go/strftime v1.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/robfig/cron/v3 v3.0.0
+	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/tebeka/strftime v0.1.4 // indirect
 	go.uber.org/zap v1.14.1
-	gopkg.in/ini.v1 v1.55.0 // indirect
+	gopkg.in/ini.v1 v1.55.0
 )

@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"io"
@@ -10,10 +11,12 @@ import (
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 )
 
-var errorLogger *zap.SugaredLogger
-var Logger *zap.Logger
+type LogField map[string]interface{}
+//var errorLogger *zap.SugaredLogger
+var logger *zap.Logger
 
 func init()  {
+	//zapcore.NewJSONEncoder
 	encoder := zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
 		MessageKey:     "msg",
 		LevelKey:       "level",
@@ -33,25 +36,6 @@ func init()  {
 		EncodeName:     zapcore.FullNameEncoder,
 	})
 
-	//encoder2 := zapcore.NewJSONEncoder(zapcore.EncoderConfig{
-	//	MessageKey:     "msg",
-	//	LevelKey:       "level",
-	//	TimeKey:        "ts",
-	//	NameKey:        "logger",
-	//	CallerKey:      "caller",
-	//	StacktraceKey:  "stacktrace",
-	//	LineEnding:     zapcore.DefaultLineEnding,
-	//	EncodeLevel:    zapcore.CapitalLevelEncoder,
-	//	EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-	//		enc.AppendString(t.Format("2006-01-02 15:04:05"))
-	//	},
-	//	EncodeDuration: func(d time.Duration, enc zapcore.PrimitiveArrayEncoder) {
-	//		enc.AppendInt64(int64(d) / 1000000)
-	//	},
-	//	EncodeCaller:   zapcore.ShortCallerEncoder,
-	//	EncodeName:     zapcore.FullNameEncoder,
-	//})
-
 	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl <= zapcore.InfoLevel
 	})
@@ -65,22 +49,17 @@ func init()  {
 	errorWriter := getWriter("./logs/error.log")
 
 	core := zapcore.NewTee(
-		zapcore.NewCore(encoder, zapcore.AddSync(infoWriter), infoLevel),
+		zapcore.NewCore(encoder, zapcore.AddSync(infoWriter), infoLevel).With([]zap.Field{zap.Int("foo", 42), zap.String("bar", "baz")}),
 		zapcore.NewCore(encoder, zapcore.AddSync(errorWriter), errorLevel),
 		)
 
 	//log := zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1),zap.AddStacktrace(errorLevel))
-	//Logger = zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1))
-	Logger = zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1),zap.AddCallerSkip(-1))
+	logger = zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1))
+	//errorLogger = logger.Sugar()
 
-	Logger.WithOptions(zap.Fields(zap.Int("foo", 42)))
-
-	errorLogger = Logger.Sugar()
 }
 
-func Name(name string)  {
-	errorLogger.Named(name)
-}
+
 func getWriter(filename string) io.Writer {
 	hook, err := rotatelogs.New(
 		strings.Replace(filename, ".log", "", -1) + "-%Y%m%d.log",
@@ -91,58 +70,49 @@ func getWriter(filename string) io.Writer {
 	return hook
 }
 
-func Debug(args ...interface{})  {
-	errorLogger.Debug(args...)
+func Debug(msg string, fields ...zap.Field)  {
+	logger.Debug(msg, fields...)
 }
 
-func Debugf(template string, args ...interface{}) {
-	errorLogger.Debugf(template, args...)
+func getFields(params LogField) []zap.Field {
+	fields := make([]zap.Field,0)
+	for k,v := range params {
+		switch x := v.(type) {
+		case int:
+			fields = append(fields, zap.Int(k,x))
+		case string:
+			fields = append(fields, zap.String(k,x))
+		}
+	}
+	return fields
 }
 
-func Info(args ...interface{}) {
-	errorLogger.Info(args...)
+func InfoA(msg string,logfields LogField)  {
+	fields := getFields(logfields)
+	fmt.Println(fields)
+	logger.Info(msg, fields...)
 }
 
-func Infof(template string, args ...interface{}) {
-	errorLogger.Infof(template, args...)
+func Info(msg string, fields ...zap.Field)  {
+	logger.Info(msg, fields...)
 }
 
-func Warn(args ...interface{}) {
-	errorLogger.Warn(args...)
+func Warn(msg string, fields ...zap.Field)  {
+	logger.Warn(msg, fields...)
 }
 
-func Warnf(template string, args ...interface{}) {
-	errorLogger.Warnf(template, args...)
+func Error(msg string, fields ...zap.Field)  {
+	logger.Error(msg, fields...)
 }
 
-func Error(args ...interface{}) {
-	errorLogger.Error(args...)
+func DPanic(msg string, fields ...zap.Field)  {
+	logger.DPanic(msg, fields...)
 }
 
-func Errorf(template string, args ...interface{}) {
-	errorLogger.Errorf(template, args...)
+func Panic(msg string, fields ...zap.Field)  {
+	logger.Panic(msg, fields...)
 }
 
-func DPanic(args ...interface{}) {
-	errorLogger.DPanic(args...)
-}
-
-func DPanicf(template string, args ...interface{}) {
-	errorLogger.DPanicf(template, args...)
-}
-
-func Panic(args ...interface{}) {
-	errorLogger.Panic(args...)
-}
-
-func Panicf(template string, args ...interface{}) {
-	errorLogger.Panicf(template, args...)
-}
-
-func Fatal(args ...interface{}) {
-	errorLogger.Fatal(args...)
-}
-
-func Fatalf(template string, args ...interface{}) {
-	errorLogger.Fatalf(template, args...)
+func Fatal(msg string, fields ...zap.Field)  {
+	logger.Fatal(msg, fields...)
 }

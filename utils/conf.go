@@ -2,8 +2,8 @@ package utils
 
 import (
 	"fmt"
-	"golang.org/x/tools/go/ssa/interp/testdata/src/os"
 	"gopkg.in/ini.v1"
+	"os"
 )
 
 const (
