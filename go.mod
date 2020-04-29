@@ -1,4 +1,4 @@
-module finance
+module pay.sc.weibo.com
 
 go 1.14
 

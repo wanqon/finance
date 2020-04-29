@@ -1,11 +1,11 @@
-package reconciliation
+package finance
 
 import (
 	"bufio"
-	"finance/utils"
 	"fmt"
 	"io"
 	"os"
+	"pay.sc.weibo.com/tool"
 	"strconv"
 	"strings"
 	"sync"
@@ -50,7 +50,7 @@ func (bill *ChargeBill) Run() {
 		t, _ = time.Parse(TIME_LAYIN,bill.date)
 	}
 	dbDate := t.Format("20060102")
-	basePath := utils.GetString("path", "data")
+	basePath := tool.GetConfString("dir", "data")
 	sourceDir := fmt.Sprintf(basePath+"/src_data/db/charge/%s/",dbDate)
 	year,month,day := t.Date()
 	targetDir := fmt.Sprintf(basePath+"/finance/charge/%d%02d/%02d/", year, int(month), day)

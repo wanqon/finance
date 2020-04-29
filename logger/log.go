@@ -4,6 +4,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"io"
+	"pay.sc.weibo.com/tool"
 	"strings"
 	"time"
 
@@ -11,8 +12,7 @@ import (
 )
 
 type LogField map[string]interface{}
-//var errorLogger *zap.SugaredLogger
-var logger *zap.Logger
+var zapper *zap.Logger
 
 func init()  {
 	//zapcore.NewJSONEncoder
@@ -44,8 +44,9 @@ func init()  {
 	})
 
 	//kafkaEncoder := zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
-	infoWriter := getWriter("./logs/info.log")
-	errorWriter := getWriter("./logs/error.log")
+	basePath := tool.GetConfString("dir","log")
+	infoWriter := getWriter(basePath + "/info.log")
+	errorWriter := getWriter(basePath + "/error.log")
 
 	core := zapcore.NewTee(
 		zapcore.NewCore(encoder, zapcore.AddSync(infoWriter), infoLevel).With([]zap.Field{zap.Int("foo", 42), zap.String("bar", "baz")}),
@@ -53,7 +54,7 @@ func init()  {
 		)
 
 	//log := zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1),zap.AddStacktrace(errorLevel))
-	logger = zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1))
+	zapper = zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1))
 	//errorLogger = logger.Sugar()
 
 }
@@ -70,7 +71,7 @@ func getWriter(filename string) io.Writer {
 }
 
 func Debug(msg string, fields ...zap.Field)  {
-	logger.Debug(msg, fields...)
+	zapper.Debug(msg, fields...)
 }
 
 func getFields(params LogField) []zap.Field {
@@ -88,30 +89,30 @@ func getFields(params LogField) []zap.Field {
 
 func Info(msg string,logfields LogField)  {
 	fields := getFields(logfields)
-	logger.Info(msg, fields...)
+	zapper.Info(msg, fields...)
 }
 
 func Warn(msg string, logfields LogField)  {
 	fields := getFields(logfields)
-	logger.Warn(msg, fields...)
+	zapper.Warn(msg, fields...)
 }
 
 func Error(msg string, logfields LogField)  {
 	fields := getFields(logfields)
-	logger.Error(msg, fields...)
+	zapper.Error(msg, fields...)
 }
 
 func DPanic(msg string, logfields LogField)  {
 	fields := getFields(logfields)
-	logger.DPanic(msg, fields...)
+	zapper.DPanic(msg, fields...)
 }
 
 func Panic(msg string, logfields LogField)  {
 	fields := getFields(logfields)
-	logger.Panic(msg, fields...)
+	zapper.Panic(msg, fields...)
 }
 
 func Fatal(msg string, logfields LogField)  {
 	fields := getFields(logfields)
-	logger.Fatal(msg, fields...)
+	zapper.Fatal(msg, fields...)
 }

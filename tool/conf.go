@@ -1,4 +1,4 @@
-package utils
+package tool
 
 import (
 	"fmt"
@@ -22,14 +22,14 @@ func init()  {
 	}
 }
 
-func GetString(section string, key string) string {
+func GetConfString(section string, key string) string {
 	return confReader.Section(section).Key(key).String()
 }
 
-func GetInt(section string, key string) int {
+func GetConfInt(section string, key string) int {
 	return confReader.Section(section).Key(key).MustInt(0)
 }
 
-func GetBool(section string, key string) bool {
+func GetConfBool(section string, key string) bool {
 	return confReader.Section(section).Key(key).MustBool(false)
 }
